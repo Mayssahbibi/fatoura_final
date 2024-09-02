@@ -5,7 +5,7 @@ if(isset($_SESSION['cashier']) && !empty($_SESSION['cashier'])){
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $_SESSION['cashier'] = $_POST['cashier'];
-    header("location: ./");
+    header("location: ./home.php");
 }
 ?>
 <!DOCTYPE html>
@@ -13,7 +13,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | TUNISIE TELECOME INVOICES</title>
+    <title>TUNISIE TELECOME INVOICES</title>
     <!-- Fontawesome CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Bootstrap CSS CDN -->

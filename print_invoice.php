@@ -1,12 +1,28 @@
 <?php 
 session_start();
 require_once('db-connect.php');
-$id = $_SESSION['generate_receipt_id'] ?? "";
 
+// Check if the invoice code is passed via GET or POST method
+$invoice_code = $_GET['invoice_code'] ?? $_SESSION['generate_receipt_invoice_code'] ?? "";
+
+if (!$invoice_code) {
+    // Redirect to invoice.php if no invoice code is found
+    header("Location: invoice.php");
+    exit;
+}
+
+// Fetch invoice settings
 $invoice_settings_qry = $conn->query("SELECT * FROM `settings_tbl`")->fetch_all(MYSQLI_ASSOC);
 $invoice_settings = array_column($invoice_settings_qry, 'meta_value', 'meta_field');
 
-$invoice_data = $conn->query("SELECT * FROM `invoices_tbl` where md5(`id`) = '{$id}'")->fetch_array();
+// Fetch invoice data by invoice code
+$invoice_data = $conn->query("SELECT * FROM `invoices_tbl` WHERE `invoice_code` = '{$invoice_code}'")->fetch_array();
+
+if (!$invoice_data) {
+    // Handle error if invoice data is not found
+    echo "Invoice not found.";
+    exit;
+}
 
 ?>
 <!DOCTYPE html>
@@ -14,19 +30,19 @@ $invoice_data = $conn->query("SELECT * FROM `invoices_tbl` where md5(`id`) = '{$
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TT.FACTURE</title>
-     <!-- Fontawesome CSS CDN -->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Printable Invoice Receipt | Simple Invoice in PHP</title>
+    <!-- Fontawesome CSS CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <!-- Fontawesome CSS CDN -->
+    <!-- Fontawesome JS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- jQuery CSS CDN -->
+    <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <!-- Bootstrap CSS CDN -->
+    <!-- Bootstrap JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
@@ -60,7 +76,7 @@ $invoice_data = $conn->query("SELECT * FROM `invoices_tbl` where md5(`id`) = '{$
             </thead>
             <tbody>
                 <?php 
-                $items_qry = $conn->query("SELECT * FROM `invoice_meta_tbl` where `invoice_id` = '{$invoice_data['id']}' ");
+                $items_qry = $conn->query("SELECT * FROM `invoice_meta_tbl` WHERE `invoice_id` = '{$invoice_data['id']}' ");
                 foreach($items_qry->fetch_all(MYSQLI_ASSOC) as $item):
                 ?>
                 <tr>
@@ -78,7 +94,7 @@ $invoice_data = $conn->query("SELECT * FROM `invoices_tbl` where md5(`id`) = '{$
             <div class="text-end"><?= number_format($invoice_data['total_amount'], 2) ?></div>
         </div>
         <div class="d-flex w-100 justify-content-between">
-            <div class="text-dark fw-bold text">Discount @ (<?= $invoice_data['discount_percentage'] ?>)</div>
+            <div class="text-dark fw-bold text">Discount @ (<?= $invoice_data['discount_percentage'] ?>%)</div>
             <div class="text-end"><?= number_format($invoice_data['discount_amount'], 2) ?></div>
         </div>
         <div class="d-flex w-100 justify-content-between">
@@ -111,6 +127,6 @@ $invoice_data = $conn->query("SELECT * FROM `invoices_tbl` where md5(`id`) = '{$
 
 <?php
 $conn->close();
-if(isset($_SESSION['generate_receipt_id']))
-    unset($_SESSION['generate_receipt_id']);
+if(isset($_SESSION['generate_receipt_invoice_code']))
+    unset($_SESSION['generate_receipt_invoice_code']);
 ?>

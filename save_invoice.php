@@ -48,5 +48,5 @@ if(!empty($invoice_values)){
 $_SESSION['flashdata'] = $resp;
 
 $conn->close();
-header("location: ./");
+header("location: ./home.php");
 ?>

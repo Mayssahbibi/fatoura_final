@@ -6,7 +6,7 @@ $uname = "root";
 // Password
 $pw = "@123456789";
 // Database Name
-$dbname = "invoice2";
+$dbname = "tuniliv";
 
 try{
     $conn = new MySQLi($host, $uname, $pw, $dbname);

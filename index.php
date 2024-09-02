@@ -48,7 +48,7 @@
           
 
           <li><a href="register.php">S'inscrire</a></li>
-          <li><a class="get-a-quote" href="home.php">Se Connecter</a></li>
+          <li><a class="get-a-quote" href="connect.php">Se Connecter</a></li>
         </ul>
       </nav>
 
@@ -168,7 +168,7 @@
           <div class="col-lg-8 text-center">
             <h3> Espace Client </h3>
             <p>  Connecter dans votre espace pour bénéficier de nos offres</p>
-            <a class="cta-btn" href="home.php">Se Connecter</a>
+            <a class="cta-btn" href="connect.php">Se Connecter</a>
           </div>
         </div>
 

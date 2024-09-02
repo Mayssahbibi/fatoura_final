@@ -3,7 +3,7 @@ session_start();
 require_once('db-connect.php');
 
 // Fetch all invoices from the database
-$query = "SELECT * FROM `invoices_tbl`";
+$query = "SELECT * FROM invoices_tbl";
 $result = $conn->query($query);
 
 if(!$result){
@@ -213,3 +213,5 @@ if(!$result){
 <?php
 $conn->close();
 ?>
+
+
